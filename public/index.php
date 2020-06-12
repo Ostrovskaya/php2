@@ -3,8 +3,8 @@
 require __DIR__ . '/../config/main.php';
 require SERVICES_DIR . 'Autoloader.php';
 
-spl_autoload_register([new cervices\Autoloader(), 'loadClass']);
+spl_autoload_register([new app\cervices\Autoloader(), 'loadClass']);
 
-$product = new models\Weighted_Product(150);
+$product = new app\models\Product();
 
-var_dump($product);
+var_dump($product->getById(1));

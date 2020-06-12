@@ -1,12 +1,12 @@
 <?php
-namespace models;
+namespace app\models;
 
 class Order extends Model
 {
     protected $id;
-    protected $user_id;
-    protected $total_price;
-    protected $products_list;
+    protected $userId;
+    protected $totalPrice;
+    protected $productsList;
     protected $date;
     protected $status;
 
@@ -15,47 +15,62 @@ class Order extends Model
         return "Orders";
     }
 
+    public function saveNewOrder() {
+        $sql = "INSERT INTO reviews (id, user_id, total_price, category_id, date, status) VALUES (:id, :userId, :totalPrice, :date, :status)";
+        return $this->db->execute($sql, [
+            'id' => $this->getId(),
+            'userId' => $this->getUserId(),
+            'totalPrice' => $this->getTotalPrice(),
+            'date' => $this->getDate(),
+            'status' => $this->getStatus(),
+        ]);
+    }
+
+    protected function setAll($arr){
+        $this->setId($arr['id']);
+        $this->setUserId($arr['userId']);
+        $this->setTotalPrice($arr['totalPrice']);
+        $this->setDate($arr['date']);
+        $this->setStatus($arr['status']);
+    }
+
     public function getId()
     {
         return $this->id;
     }
-
     public function setId($id): Order
     {
         $this->id = $id;
         return $this;
     }
 
-    public function getUser_id()
+    public function getUserId()
     {
-        return $this->user_id;
+        return $this->userId;
     }
-
-    public function setUser_id($user_id): Order
+    public function setUserId($userId): Order
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
         return $this;
     }
 
-    public function getTotal_price()
+    public function getTotalPrice()
     {
-        return $this->total_price;
+        return $this->totalPrice;
     }
-
-    public function setTotal_price($total_price): Order
+    public function setTotalPrice($totalPrice): Order
     {
-        $this->total_price = $total_price;
+        $this->totalPrice = $totalPrice;
         return $this;
     }
 
-    public function getProducts_list()
+    public function getProductsList()
     {
-        return $this->products_list;
+        return $this->productsList;
     }
-
-    public function setProducts_list($products_list): Order
+    public function setProductsList($productsList): Order
     {
-        $this->products_list = $products_list;
+        $this->productsList = $productsList;
         return $this;
     }
 
@@ -63,7 +78,6 @@ class Order extends Model
     {
         return $this->date;
     }
-
     public function setDate($date): Order
     {
         $this->date = $date;
@@ -74,7 +88,6 @@ class Order extends Model
     {
         return $this->status;
     }
-
     public function setStatus($status): Order
     {
         $this->status = $status;
