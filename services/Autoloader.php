@@ -1,15 +1,14 @@
 <?php
 
-namespace cervices;
+namespace app\cervices;
 
 class Autoloader
 {
     public function loadClass(string $classname)
     {
-        $classname = preg_replace("/\\\\/", "/", $classname);
-
-        $filename = DOCUMENT_ROOT . $classname . ".php";
-
+        $classname = str_replace('app\\', DOCUMENT_ROOT, $classname);
+        $filename = realpath("{$classname}.php");
+        
         if(file_exists($filename)) {
             require $filename;
             return true;
