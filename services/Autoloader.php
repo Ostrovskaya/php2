@@ -1,6 +1,6 @@
 <?php
 
-namespace app\cervices;
+namespace app\services;
 
 class Autoloader
 {

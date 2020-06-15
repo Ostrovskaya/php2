@@ -15,7 +15,7 @@ trait TSingleton {
 
     private function __clone() {}
 
-    public static function getObj() {
+    public static function getInstance() {
         if(static::$obj == null) {
             static::$obj = new static ();
         }
