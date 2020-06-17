@@ -30,6 +30,18 @@ class Db
         return $this->conn;
     }
 
+    public function getLastInsertId()
+    {
+        return $this->getConnection()->lastInsertId();
+    }
+
+    public function queryObject($className, string $sql, array $params = [])
+    {
+        $pdoStatement = $this->query($sql, $params);
+        $pdoStatement->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $className);
+        return $pdoStatement->fetchAll();
+    }
+
     private function query($sql, $param=[]){
         $pdos = $this->getConnection()->prepare($sql);
         $pdos->execute($param);

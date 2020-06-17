@@ -1,10 +1,24 @@
 <?php
 
+use app\models\Product;
+use app\services\Inquiry;
+
 require __DIR__ . '/../config/main.php';
 require SERVICES_DIR . 'Autoloader.php';
 
-spl_autoload_register([new app\cervices\Autoloader(), 'loadClass']);
+spl_autoload_register([new app\services\Autoloader(), 'loadClass']);
 
-$product = new app\models\Product();
+$controllerName = Inquiry::get('c') ?: 'product';
+$actionName = Inquiry::get('a');
 
-var_dump($product->getById(1));
+$controllerClass = "app\controllers\\" . ucfirst($controllerName) . "Controller";
+
+if(class_exists($controllerClass)) {
+    $controller = new $controllerClass;
+    $controller->runAction($actionName);
+}
+
+$product = Product::getById(1);
+$product->price=2000;
+$product->description="Самая лучшая приставка";
+$product->save();
