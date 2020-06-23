@@ -3,12 +3,21 @@
 
 namespace app\controllers;
 
+use app\services\renderers\IRender;
+
 abstract class Controller
 {
     protected $defaultAction = 'index';
     protected $action;
     protected $useLayout = true;
     protected $layout = 'main';
+
+    protected $renderer;
+
+    public function __construct(IRender $renderer)
+    {
+        $this->renderer = $renderer;
+    }
 
     public function runAction($action = null)
     {
@@ -24,11 +33,13 @@ abstract class Controller
 
     abstract public function actionIndex();
 
+    abstract public function actionAdd();
+
 
     protected function render($template, $params = []){
-        $content = $this->renderTemplate($template, $params);
+        $content = $this->renderer->render($template, $params);
         if($this->useLayout) {
-            return $this->renderTemplate(
+            return $this->renderer->render(
                 "layouts/{$this->layout}",
                 ['content' => $content]
             );
@@ -36,11 +47,4 @@ abstract class Controller
         return $content;
     }
 
-    protected function renderTemplate($template, $params = []) {
-        ob_start();
-        $templatePath = VIEWS_DIR . $template . ".php";
-        extract($params);
-        include $templatePath;
-        return ob_get_clean();
-    }
 }

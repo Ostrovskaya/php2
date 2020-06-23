@@ -10,11 +10,19 @@ abstract class Record implements IRecord
     public $id;
     protected $db = null;
 
+    public $changeData = [];
+
     public function __construct()
     {
         $this->db = Db::getInstance();
     }
-
+    
+    public function getChangeData(array $data){
+        foreach ($data as $key => $value) {
+            $this->changeData[$key] = $value;
+        }
+    }
+    
     public static function getById(int $id): Record
     {
         $tableName = static::getTableName();
@@ -27,6 +35,22 @@ abstract class Record implements IRecord
         $tableName = static::getTableName();
         $sql = "SELECT * FROM {$tableName}";
         return Db::getInstance()->queryAll($sql);
+    }
+
+    public static function getByIds(array $ids)
+    {
+        $tableName = static::getTableName();
+
+        foreach ($ids as $key => $id) {
+
+            $params["id{$key}"] = $id;
+            $placeholders[] = ":id{$key}";
+        }
+        $placeholders = implode(", ", $placeholders);
+
+        $sql = "SELECT * FROM {$tableName} WHERE id IN ({$placeholders})";
+        
+        return Db::getInstance()->queryAll($sql, $params);
     }
 
     public function delete()
@@ -42,10 +66,7 @@ abstract class Record implements IRecord
         $params = [];
         $columns = [];
 
-        foreach ($this as $key => $value) {
-            if(in_array($key,['db', 'tableName'])) {
-                continue;
-            }
+        foreach ($this->changeData as $key => $value) {
 
             $params[":{$key}"] = $value;
             $columns[] = "`{$key}`";
@@ -62,25 +83,18 @@ abstract class Record implements IRecord
     public function update()
     {
         $tableName = static::getTableName();
-
-        $sql = "SELECT * FROM {$tableName} WHERE id = :id";
-        $old = Db::getInstance()->queryOne($sql, [':id' => $this->id]);
         
         $params = ['id' => $this->id];
 
-        foreach ($this as $key => $value) {
-            if(in_array($key,['db', 'tableName'])) {
-                continue;
-            }
+        foreach ($this->changeData as $key => $value) {
 
-            if($value != $old[$key]){
-                
+            if(isset($value)){
                 $params["{$key}"] = $value;
                 $placeholders[] = "{$key}=:{$key}";
-            }        
+            }       
         }
 
-        if(empty($placeholders)){
+        if(!empty($placeholders)){
             $placeholders = implode(", ", $placeholders);
 
             $sql = "UPDATE {$tableName} SET {$placeholders} WHERE id = :id";
@@ -92,16 +106,24 @@ abstract class Record implements IRecord
 
     public function save()
     {
-        $tableName = static::getTableName();
-
-        $sql = "SELECT * FROM {$tableName} WHERE id = :id";
-        $result = Db::getInstance()->queryOne($sql, [':id' => $this->id]);
-
-        if(!empty($result)){
+        if(!empty($this->id)){
+            var_dump("update");
             $this->update();
         } 
         else{
+            var_dump("insert");
            $this->insert(); 
+        } 
+
+        $this->saveData();
+    }
+
+    protected function saveData(){
+        foreach ($this->changeData as $key => $value) {
+            if(isset($value)){
+                $this->$key = $value;
+                $this->changeData[$key] = null;
+            }       
         } 
     }
 }

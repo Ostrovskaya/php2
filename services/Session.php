@@ -10,63 +10,53 @@ class Session{
         }
     }
     
-    public static function set($key, $value) {
+    public static function set($name, $array) {
         self::getStart();
+
+        foreach ($array as $key => $value) {
+            $_SESSION[$name][$key] = $value;
+        }
     
-        if(is_array($key))
+    }
+    
+    public static function get($name, $key = null) {
+        self::getStart();
+        if(isset($key))
         {
-            $_SESSION[$key[0]][$key[1]] = $value;
+            return $_SESSION[$name][$key];
         } 
         else{
-            $_SESSION[$key] = $value;
+            return $_SESSION[$name];
         }
     }
     
-    public static function get($key) {
+    public static function delete($name, $key = null) {
         self::getStart();
     
-        if(is_array($key))
+        if(isset($key))
         {
-            return $_SESSION[$key[0]][$key[1]];
+            unset($_SESSION[$name][$key]);
         } 
         else{
-            return $_SESSION[$key];
+            unset($_SESSION[$name]);
         }
     }
     
-    public static function delete($key) {
+    public static function increaseValue($name, $key, $value) {
         self::getStart();
     
-        if(is_array($key))
-        {
-            unset($_SESSION[$key[0]][$key[1]]);
-        } 
-        else{
-            unset($_SESSION[$key]);
-        }
+        $_SESSION[$name][$key] += $value;
     }
     
-    public static function increaseValue($key, $value) {
+    public static function isSession($name, $key = null) {
         self::getStart();
     
-        if(is_array($key))
+        if(isset($key))
         {
-            $_SESSION[$key[0]][$key[1]] += $value;
+            return isset( $_SESSION[$name][$key]);
         } 
         else{
-            $_SESSION[$key] += $value;
-        }
-    }
-    
-    public static function isSession($key) {
-        self::getStart();
-    
-        if(is_array($key))
-        {
-            return isset( $_SESSION[$key[0]][$key[1]]);
-        } 
-        else{
-            return isset($_SESSION[$key]);
+            return isset($_SESSION[$name]);
         }
     }
 }
