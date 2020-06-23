@@ -12,13 +12,17 @@ class ProductController  extends Controller
     {
         $products = Product::getAll();
 
-        echo $this->render("catalog", ['products' => $products]);
+        echo $this->render("product/catalog", ['products' => $products]);
     }
 
     public function actionCard()
     {
         $id = $_GET['id'];
-        $model = Product::getById($id);
-        echo $this->render('product_card', ['model' => $model]);
+        $product = Product::getById($id);
+        echo $this->render('product/card', ['product' => $product]);
+    }
+
+    public function actionAdd(){
+        //
     }
 }

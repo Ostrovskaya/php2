@@ -8,6 +8,11 @@
     <title>Document</title>
 </head>
 <body>
-<?=$content?>
+<header>
+<?php include VIEWS_DIR . "user/menu.php"; ?>
+</header>
+    <?=//$content?>
+    {{content}}
 </body>
 </html>
+
