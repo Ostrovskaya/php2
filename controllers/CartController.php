@@ -5,30 +5,59 @@ namespace app\controllers;
 
 
 use app\services\Session;
-use app\models\Product;
+use app\services\Request;
+use app\models\repositories\ProductRepository;
 
-class ProductController  extends Controller
+class CartController  extends Controller
 {
 
     public function actionIndex()
     {
         $cart = [];
 
-        if (!empty(Session::get('cart'))) {
+        if (Session::isSession('cart')) {
             $productsIds = array_keys(Session::get('cart'));
-
-            foreach ($productsIds as $id) {
-                $product = Product::getById($id);
+            $products = (new ProductRepository())->getByIds($productsIds);
+            foreach ($products as $product) {
+                
                 $cart[] = [
                     'id' => $product['id'],
                     'url' => $product['url'],
                     'name' => $product['name'],
                     'price' => $product['price'],
-                    'count' => Session::get(['cart' , $product['id']]),
+                    'count' => Session::get('cart' , $product['id']),
                 ];
             }
         }
 
         echo $this->render("cart", ['products' => $cart]);
+    }
+
+    public function actionAdd(){
+
+        if(Request::method() == 'POST') {
+
+            $id = (int)Request::post('id');
+        
+            if ( Session::isSession( "cart" , "{$id}") ){
+                Session::increaseValue("cart", "{$id}", 1);
+            }
+            else {
+                Session::set("cart", [ "{$id}", 1]);
+            }
+
+            $text = "Товар был успешно добавлен в корзину";
+
+            $this->useLayout = false;
+        
+            echo $this->render("msg", ['text' => $text], false);
+        }
+    }
+
+    public function actionDelete(){
+        if(Request::method() == 'POST') {
+            $id = Request::post('id');
+            Session::delete("cart" , "{$id}" );
+        }
     }
 }

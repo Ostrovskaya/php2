@@ -9,13 +9,11 @@ class Product extends Record
     public $price;
     public $category_id;
 
-    public static function getTableName(): string
-    {
-        return "catalog";
-    }
-
-    public function getNameClass(){
-        return get_called_class();
-    }
-
+    public $changeData = [
+        'id' => null,
+        'name' => null,
+        'description' => null,
+        'price' => null,
+        'category_id' => null,
+    ];
 }

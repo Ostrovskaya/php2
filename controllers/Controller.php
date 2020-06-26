@@ -3,12 +3,22 @@
 
 namespace app\controllers;
 
+use app\services\renderers\IRender;
+use app\exceptions\PageNotFoundException;
+
 abstract class Controller
 {
-    protected $defaultAction = 'index';
-    protected $action;
-    protected $useLayout = true;
-    protected $layout = 'main';
+    public $defaultAction = 'index';
+    public $action;
+    public $useLayout = true;
+    public $layout = 'main';
+
+    public $renderer;
+
+    public function __construct(IRender $renderer)
+    {
+        $this->renderer = $renderer;
+    }
 
     public function runAction($action = null)
     {
@@ -16,19 +26,23 @@ abstract class Controller
         $method = "action" . ucfirst($this->action);
 
         if(method_exists($this, $method)) {
-            $this->$method();
+            var_dump("!!!");
+            $this->$method();   
         } else {
-            echo "404";
+            var_dump("111");
+            throw new PageNotFoundException("Ошибка 404!");
         }
     }
 
     abstract public function actionIndex();
 
+    abstract public function actionAdd();
+
 
     protected function render($template, $params = []){
-        $content = $this->renderTemplate($template, $params);
+        $content = $this->renderer->render($template, $params);
         if($this->useLayout) {
-            return $this->renderTemplate(
+            return $this->renderer->render(
                 "layouts/{$this->layout}",
                 ['content' => $content]
             );
@@ -36,11 +50,4 @@ abstract class Controller
         return $content;
     }
 
-    protected function renderTemplate($template, $params = []) {
-        ob_start();
-        $templatePath = VIEWS_DIR . $template . ".php";
-        extract($params);
-        include $templatePath;
-        return ob_get_clean();
-    }
 }
