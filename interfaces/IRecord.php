@@ -1,20 +1,22 @@
 <?php
 
 namespace app\interfaces;
+use app\models\Record;
+
 
 interface IRecord
 {
-    public static function getById(int $id): IRecord;
+    public function getById(int $id);
 
-    public static function getALl();
+    public function getAll();
 
-    public static function getTableName(): string;
+    public function getTableName(): string;
 
-    public function delete();
+    public function delete(Record $record);
 
-    public function insert();
+    public function insert(Record $record);
 
-    public function update();
+    public function update(Record $record);
 
-    public function save();
+    public function save(Record $record);
 }

@@ -3,7 +3,7 @@
 namespace app\services;
 
 class Server{
-    public static function server($param) {
+    public static function get($param) {
         return $_SERVER[$param];
     }
 }
