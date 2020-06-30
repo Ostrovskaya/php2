@@ -4,15 +4,16 @@
 namespace app\controllers;
 
 use app\services\renderers\IRender;
+use app\exceptions\PageNotFoundException;
 
 abstract class Controller
 {
-    protected $defaultAction = 'index';
-    protected $action;
-    protected $useLayout = true;
-    protected $layout = 'main';
+    public $defaultAction = 'index';
+    public $action;
+    public $useLayout = true;
+    public $layout = 'main';
 
-    protected $renderer;
+    public $renderer;
 
     public function __construct(IRender $renderer)
     {
@@ -25,9 +26,11 @@ abstract class Controller
         $method = "action" . ucfirst($this->action);
 
         if(method_exists($this, $method)) {
-            $this->$method();
+            var_dump("!!!");
+            $this->$method();   
         } else {
-            echo "404";
+            var_dump("111");
+            throw new PageNotFoundException("Ошибка 404!");
         }
     }
 

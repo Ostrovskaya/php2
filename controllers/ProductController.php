@@ -3,22 +3,21 @@
 
 namespace app\controllers;
 
-
-use app\models\Product;
+use app\models\repositories\ProductRepository;
+use app\services\Request;
 
 class ProductController  extends Controller
 {
     public function actionIndex()
     {
-        $products = Product::getAll();
-
+        $products = (new ProductRepository())->getAll();
         echo $this->render("product/catalog", ['products' => $products]);
     }
 
     public function actionCard()
     {
-        $id = $_GET['id'];
-        $product = Product::getById($id);
+        $id = (new Request())->get('id');
+        $product = (new ProductRepository())->getById($id);
         echo $this->render('product/card', ['product' => $product]);
     }
 

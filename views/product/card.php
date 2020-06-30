@@ -11,7 +11,7 @@
 <br>
 
 <br>
-<a href="?c=cart">Перейти в корзину</a>
+<a href="../cart">Перейти в корзину</a>
 <br>
 
 <div class="detailedDescription">
@@ -21,17 +21,17 @@
 
 
 <script>
-    let link = document.querySelector('.addToCart');
+    let addToCart = document.querySelector('.addToCart');
 
-    link.addEventListener('click', evt =>{
-        let id = link.dataset.id;
+    addToCart.addEventListener('click', evt =>{
+        let id = addToCart.dataset.id;
         
-        fetch("/", {
+        fetch("../cart/add", {
             method: 'POST',
             headers: {
                 'Content-Type':  'application/x-www-form-urlencoded'
             },
-            body:  'a=add&' +'c=cart&' + 'id=' + id
+            body:  'id=' + id
 
         })
             .then( (response) => {

@@ -1,5 +1,5 @@
 <h1>Регистрация:</h1>
-<form action="?c=user&a=add" method="post" style="display:flex; flex-direction:column">
+<form action="../user/add" method="post" style="display:flex; flex-direction:column">
     <label>Логин <input type="text" name="login"></label>
     <br>
     <label>Пароль <input type="password" name="password"></label>

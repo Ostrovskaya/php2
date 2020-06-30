@@ -1,77 +1,36 @@
 <?php
 namespace app\models;
+use app\services\Session;
 
 class Order extends Record
 {
-    protected $id;
-    protected $userId;
-    protected $totalPrice;
-    protected $productsList;
-    protected $date;
-    protected $status;
+    public $user_id;
+    public $total_price;
+    public $adress;
+    public $phone;
+    public $date;
+    public $pay;
+    public $count;
 
-    public static function getTableName(): string
-    {
-        return "Orders";
-    }
+    public $changeData = [
+        'user_id' => null,
+        'total_price' => null,
+        'address' => null,
+        'date' => null,
+        'phone' => null,
+        'pay' => null,
+        'count' => null,
+    ];
 
-    public function getId()
-    {
-        return $this->id;
-    }
-    public function setId($id): Order
-    {
-        $this->id = $id;
-        return $this;
-    }
+    public function setData($post, $products){
+        $this->getChangeData($post);
+        $this->changeData['user_id'] = Session::get('user', 'id');
+        foreach ($products as $product) {
+            $count = Session::get('cart' , $product['id']);
 
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-    public function setUserId($userId): Order
-    {
-        $this->userId = $userId;
-        return $this;
-    }
-
-    public function getTotalPrice()
-    {
-        return $this->totalPrice;
-    }
-    public function setTotalPrice($totalPrice): Order
-    {
-        $this->totalPrice = $totalPrice;
-        return $this;
-    }
-
-    public function getProductsList()
-    {
-        return $this->productsList;
-    }
-    public function setProductsList($productsList): Order
-    {
-        $this->productsList = $productsList;
-        return $this;
-    }
-
-    public function getDate()
-    {
-        return $this->date;
-    }
-    public function setDate($date): Order
-    {
-        $this->date = $date;
-        return $this;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-    public function setStatus($status): Order
-    {
-        $this->status = $status;
-        return $this;
+            $this->changeData['total_price'] += (int)$product['price'] * $count;
+            $this->changeData['count'] += $count;
+            $this->changeData['date'] = date('Y-m-d H:i:s');
+        }
     }
 }

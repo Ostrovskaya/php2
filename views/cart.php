@@ -17,7 +17,7 @@
 <?php endforeach;?>
 </div>
 
-<a href="#">Оформить заказ</a>
+<a href="../order">Оформить заказ</a>
 
 
 <script>
@@ -27,12 +27,12 @@
         el.addEventListener('click', evt =>{
             let id = evt.target.dataset.id;
             
-            fetch("/", {
+            fetch("../cart/delete", {
                 method: 'POST',
                 headers: {
                     'Content-Type':  'application/x-www-form-urlencoded'
                 },
-                body:  'a=delete&' +'c=cart&' + 'id=' + id
+                body: 'id=' + id
 
             })
                 .then( (response) => {

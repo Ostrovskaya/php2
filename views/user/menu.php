@@ -1,15 +1,15 @@
 <?php if (app\models\User::isLogin()): ?> 
-    <a href="?c=user"><?=app\models\User::getUserName()?></a>
+    <a href="../user"><?=app\models\User::getUserName()?></a>
     <a href="#" class="exit">Выйти</a>
 <?php else: ?>    
-    <a href="?c=user&a=login">Войти</a>
-    <a href="?c=user&a=reg">Регистрация</a>
+    <a href="../user/login">Войти</a>
+    <a href="../user/reg">Регистрация</a>
 <?php endif; ?>
 
 <div class="logout">
     <h2>Вы уверены, что хотите выйти?</h2>
     <div class="block">
-    <input class="yes" type="button" value="Да">
+    <a href="../user/logout" class="enter"><input class="yes" type="button" value="Да"></a>
     <input class="no" type="button" value="Нет">
     </div>
 </div> 
@@ -34,23 +34,6 @@
 
     yesBtn.addEventListener('click', evt =>{    
         exit.style.display = "none";
-        fetch("/", {
-            method: 'POST',
-            headers: {
-                'Content-Type':  'application/x-www-form-urlencoded'
-            },
-            body:  'c=user&a=logout'
-        })
-        .then( (response) => {
-            if (response.status !== 200) {           
-                return Promise.reject();
-            }  
-            return response.text();
-        })
-        .then(response => {
-            console.log('OK');  
-        })
-        .catch(() => console.log('ошибка')); 
     });
     
 </script>

@@ -16,14 +16,4 @@ class Product extends Record
         'price' => null,
         'category_id' => null,
     ];
-
-    public static function getTableName(): string
-    {
-        return "catalog";
-    }
-
-    public function getNameClass(){
-        return get_called_class();
-    }
-
 }
