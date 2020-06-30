@@ -4,23 +4,17 @@ namespace app\services;
 
 class Session{
 
-    protected static function getStart() {
+    public function __construct() {
         if(is_null($_SESSION)){
             session_start();
         }
     }
     
-    public static function set($name, $array) {
-        self::getStart();
-
-        foreach ($array as $key => $value) {
-            $_SESSION[$name][$key] = $value;
-        }
-    
+    public function set($name, $key, $value) {
+        $_SESSION[$name][$key] = $value;
     }
     
-    public static function get($name, $key = null) {
-        self::getStart();
+    public function get($name, $key = null) {
         if(isset($key))
         {
             return $_SESSION[$name][$key];
@@ -30,8 +24,7 @@ class Session{
         }
     }
     
-    public static function delete($name, $key = null) {
-        self::getStart();
+    public function delete($name, $key = null) {
     
         if(isset($key))
         {
@@ -42,14 +35,12 @@ class Session{
         }
     }
     
-    public static function increaseValue($name, $key, $value) {
-        self::getStart();
+    public function increaseValue($name, $key, $value) {
     
         $_SESSION[$name][$key] += $value;
     }
     
-    public static function isSession($name, $key = null) {
-        self::getStart();
+    public function isSession($name, $key = null) {
     
         if(isset($key))
         {

@@ -3,8 +3,9 @@
 namespace app\services;
 
 class Hash{
-    public static function get($string) {
-        return md5($string . "d5f8");
+    public $salt = "d5f8";
+    public function get($string) {
+        return md5($string . $this->salt);
     }
 }
 

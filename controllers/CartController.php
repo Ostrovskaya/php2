@@ -4,60 +4,48 @@
 namespace app\controllers;
 
 
-use app\services\Session;
-use app\services\Request;
-use app\models\repositories\ProductRepository;
+use app\models\Cart;
+use app\base\App;
 
 class CartController  extends Controller
 {
 
     public function actionIndex()
     {
+        $session = App::getInstance()->session;
         $cart = [];
-
-        if (Session::isSession('cart')) {
-            $productsIds = array_keys(Session::get('cart'));
-            $products = (new ProductRepository())->getByIds($productsIds);
-            foreach ($products as $product) {
-                
-                $cart[] = [
-                    'id' => $product['id'],
-                    'url' => $product['url'],
-                    'name' => $product['name'],
-                    'price' => $product['price'],
-                    'count' => Session::get('cart' , $product['id']),
-                ];
-            }
+        if ($session->isSession('cart')) {
+            
+            $cart = (new Cart())->getAll($session->get('cart'));
         }
-
         echo $this->render("cart", ['products' => $cart]);
     }
 
     public function actionAdd(){
+        $session = App::getInstance()->session;
+        $request = App::getInstance()->request;       
 
-        if(Request::method() == 'POST') {
-
-            $id = (int)Request::post('id');
-        
-            if ( Session::isSession( "cart" , "{$id}") ){
-                Session::increaseValue("cart", "{$id}", 1);
+        if($request->method() == 'POST') {
+            $id = (int)$request->post('id');
+            if ( $session->isSession( "cart" , "{$id}") ){
+                $session->increaseValue("cart", "{$id}", 1);
             }
             else {
-                Session::set("cart", [ "{$id}", 1]);
+                $session->set("cart", "{$id}", 1);
             }
 
             $text = "Товар был успешно добавлен в корзину";
 
-            $this->useLayout = false;
-        
+            $this->useLayout = false;   
             echo $this->render("msg", ['text' => $text], false);
         }
     }
 
     public function actionDelete(){
-        if(Request::method() == 'POST') {
-            $id = Request::post('id');
-            Session::delete("cart" , "{$id}" );
+        $request = App::getInstance()->request; 
+        if($request->method() == 'POST') {
+            $id = $request->post('id');
+            App::getInstance()->session->delete("cart" , "{$id}" );
         }
     }
 }
