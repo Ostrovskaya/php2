@@ -1,8 +1,8 @@
 
-<?php if (!empty($order->products)): ?>
+<?php if (!empty($order['products'])): ?>
 <h2>Ваш заказ:</h2>
 <div>
-<?php foreach ($order->products as $product): ?>
+<?php foreach ($order['products'] as $product): ?>
     <div class="product">
         <img   width="100" src="https://placehold.it/300x200" alt="<?=$product['name']?>">
         <h3><?=$product["product"]['name']?></h3>
@@ -12,8 +12,8 @@
 </div>
 <?php endforeach;?>
 <h2>Итого: </h2>
-<p>Общее количество:<?=$order->count?> шт</p>
-<p>Общая стоимость: <?=$order->total_price?> &#8381;</p>
+<p>Общее количество:<?=$order['count']?> шт</p>
+<p>Общая стоимость: <?=$order['total_price']?> &#8381;</p>
 
 <form action="order/add" method="post" style="display:flex; flex-direction:column"> 
  <div>

@@ -2,21 +2,23 @@
 
 namespace app\services;
 
-use app\traits\TSingleton;
-
 class Db
 {
-    use TSingleton;
-    
-    private static $conn = null;
+ 
+    private $conn = null;
+    protected $config;
 
-    private $config = [
-        "host" => "127.0.0.1",
-        "user" => "root",
-        "password" => "root",
-        "db" => "shop",
-        'charset' => 'utf8',
-    ];
+    public function __construct($driver, $host, $login, $password, $database, $charset)
+    {
+        $this->config = [
+            'driver' => $driver,
+            'host' => $host,
+            'user' => $login,
+            'password' => $password,
+            'db' => $database,
+            'charset' => $charset
+        ];
+    }
 
     private function getConnection() {
         if(is_null($this->conn)){

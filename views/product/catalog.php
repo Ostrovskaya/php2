@@ -19,3 +19,4 @@
     </figure>
 <?php endforeach;?>
 </div>
+<a href="product/control">Управление заказами</a>

@@ -6,6 +6,7 @@ namespace app\models\repositories;
 use app\models\Record;
 use app\services\Db;
 use app\interfaces\IRecord;
+use app\base\App;
 
 abstract class Repository  implements IRecord
 {
@@ -13,7 +14,7 @@ abstract class Repository  implements IRecord
 
     public function __construct()
     {
-        $this->db = Db::getInstance();
+        $this->db = App::getInstance()->db;
     }
     
     public function getById(int $id): Record
@@ -47,8 +48,10 @@ abstract class Repository  implements IRecord
     }
 
     public function delete(Record $record)
-    {
-        $sql = "SELECT * FROM {$this->tableName} WHERE id = :id";
+    {   
+        $tableName = $this->getTableName();
+        $sql = "DELETE FROM {$tableName} WHERE id = :id";
+
         return $this->db->execute($sql, [':id' => $record->id]);
     }
 
@@ -69,12 +72,12 @@ abstract class Repository  implements IRecord
         $placeholders = implode(", ", array_keys($params));
 
         $sql = "INSERT INTO {$tableName} ({$columns}) VALUES ({$placeholders})";
-        $this->db->execute($sql, $params);
-        echo '<pre>'; 
-        var_dump($sql);   
-        var_dump($params);     
-        echo '</pre>'; 
+
+        $result = $this->db->execute($sql, $params);
+        
         $record->id = $this->db->getLastInsertId();
+
+        return $result;
     }
 
     public function update(Record $record)
@@ -96,20 +99,22 @@ abstract class Repository  implements IRecord
 
             $sql = "UPDATE {$tableName} SET {$placeholders} WHERE id = :id";
         
-            $this->db->execute($sql, $params);
+            return $this->db->execute($sql, $params);
         }    
     }
 
     public function save(Record $record)
-    {
+    {   
         if(!empty($record->id)){
-            $this->update($record);
+            $result = $this->update($record);
         } 
         else{
-           $this->insert($record); 
+           $result = $this->insert($record); 
         } 
 
         $record->saveData();
+
+        return $result;
     }
 
     abstract public function getRecordClass(): string;

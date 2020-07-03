@@ -1,6 +1,6 @@
 <?php
 namespace app\models;
-use app\services\Session;
+use app\models\repositories\ProductRepository;
 
 class Order extends Record
 {
@@ -12,6 +12,7 @@ class Order extends Record
     public $pay;
     public $count;
 
+
     public $changeData = [
         'user_id' => null,
         'total_price' => null,
@@ -22,15 +23,33 @@ class Order extends Record
         'count' => null,
     ];
 
-    public function setData($post, $products){
+    public function setData($session,$post, $products){        
         $this->getChangeData($post);
-        $this->changeData['user_id'] = Session::get('user', 'id');
+        $this->changeData['user_id'] =(int)$session->get('user', 'id');
         foreach ($products as $product) {
-            $count = Session::get('cart' , $product['id']);
+            $count = $session->get('cart' , $product['id']);
 
             $this->changeData['total_price'] += (int)$product['price'] * $count;
             $this->changeData['count'] += $count;
-            $this->changeData['date'] = date('Y-m-d H:i:s');
         }
+    }
+
+    public function getAll($items){ 
+        $order = [];
+        $productsIds = array_keys($items); 
+        $products = (new ProductRepository())->getByIds($productsIds);
+        foreach ($products as $product) {    
+            $count = $items[$product['id']];   
+            $order['products'][] = [
+                'product' => $product,
+                'count' => $count,
+            ];
+            $total_price += (int)$product['price'] * $count;
+            $total_count += $count;
+        }
+        $order['total_price'] = $total_price;
+        $order['count'] = $total_count;
+        return $order;
+
     }
 }

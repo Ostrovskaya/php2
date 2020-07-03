@@ -24,8 +24,6 @@ class Request
             $this->controllerName = $matches['controller'][0];
             $this->actionName = $matches['action'][0];
         }
-     //   var_dump("controllerName:   ", $this->controllerName , "<br><br>");
-      //  var_dump("actionName:   ", $this->actionName , "<br><br>");
     }
 
     public function getControllerName(): string
@@ -38,27 +36,27 @@ class Request
         return $this->actionName;
     }
     
-    public static function get($name = null) {
+    public function get($name = null) {
         if($name){
             return $_GET[$name];
         }
         return $_GET;
     }
     
-    public static function post($name = null) {
+    public function post($name = null) {
         if($name){
            return $_POST[$name]; 
         }
         return $_POST; 
     }
-    public static function request($name = null) {
+    public function request($name = null) {
         if($name){
            return $_REQUEST[$name]; 
         }
         return $_REQUEST; 
     }
 
-    public static function method(): string
+    public function method(): string
     {
         return $_SERVER['REQUEST_METHOD'];
     }

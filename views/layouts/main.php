@@ -9,7 +9,7 @@
 </head>
 <body>
 <header>
-<?php include VIEWS_DIR . "user/menu.php"; ?>
+<?php include "../views/user/menu.php"; ?>
 </header>
     <?=$content?>
 </body>

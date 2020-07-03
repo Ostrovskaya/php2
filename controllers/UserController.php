@@ -3,9 +3,7 @@
 
 namespace app\controllers;
 
-use app\services\Session;
-use app\services\Request;
-use app\services\Hash;
+use app\base\App;
 use app\models\repositories\UserRepository;
 use app\models\User;
 
@@ -13,19 +11,20 @@ class UserController  extends Controller
 {
     public function actionIndex()
     {
-        $id = Session::get('user', 'id');
+        $id = App::getInstance()->session->get('user', 'id');
         $user = (new UserRepository())->getById($id);
         echo $this->render("user/personal", ['user' => $user]);
     }
 
     public function actionAdd(){
-        if( Request::method() == 'POST') {
+        $request = App::getInstance()->request; 
+        if( $request->method() == 'POST') {
             $user = new User();
 
-            $user->getChangeData(Request::post());
-            $user->changeData['password'] = Hash::get($user->changeData['password']);
+            $user->getChangeData($request->post());
+            $user->changeData['password'] = App::getInstance()->hash->get($user->changeData['password']);
             (new UserRepository())->save($user);
-            Session::set("user", [ 
+            App::getInstance()->session->set("user", [ 
                 "id" => $user->id,
                 "name" => $user->name,
             ]);
@@ -41,13 +40,14 @@ class UserController  extends Controller
     }
 
     public function actionEnter(){
-        if(Request::method() == 'POST') {
-            $login = Request::post('login');
-            $password = Request::post('password');
+        $request = App::getInstance()->request; 
+        if($request->method() == 'POST') {
+            $login = $request->post('login');
+            $password = $request->post('password');
             $user = (new UserRepository())->getByLogin($login);
-            var_dump($user, "<br><br>");
-            if($user && $user->password == Hash::get($password)){
-                Session::set("user", [ 
+
+            if($user && $user->password == (new Hash())->get($password)){
+                App::getInstance()->session->set("user", [ 
                     "id" => $user->id,
                     "name" => $user->name,
                 ]);
@@ -60,7 +60,7 @@ class UserController  extends Controller
     }
 
     public function actionLogout(){
-        Session::delete("user");
+        App::getInstance()->session->delete("user");
         echo $this->render("user/login");
     }
 

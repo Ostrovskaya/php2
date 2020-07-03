@@ -1,7 +1,7 @@
 <?php
 namespace app\models;
 
-use app\services\Session;
+use app\base\App;
 
 use app\services\Db;
 
@@ -23,10 +23,10 @@ class User extends Record{
     ];
 
     public static function isLogin(){
-        return !empty(Session::get('user'));
+        return !empty(App::getInstance()->session->get('user'));
     }
 
     public static function getUserName(){
-        return Session::get('user', 'name');
+        return App::getInstance()->session->get('user', 'name');
     }
 }

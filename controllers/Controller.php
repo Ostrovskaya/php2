@@ -26,10 +26,8 @@ abstract class Controller
         $method = "action" . ucfirst($this->action);
 
         if(method_exists($this, $method)) {
-            var_dump("!!!");
             $this->$method();   
         } else {
-            var_dump("111");
             throw new PageNotFoundException("Ошибка 404!");
         }
     }
