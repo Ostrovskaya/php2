@@ -15,7 +15,6 @@ class CartController  extends Controller
         $session = App::getInstance()->session;
         $cart = [];
         if ($session->isSession('cart')) {
-            
             $cart = (new Cart())->getAll($session->get('cart'));
         }
         echo $this->render("cart", ['products' => $cart]);
@@ -42,10 +41,10 @@ class CartController  extends Controller
     }
 
     public function actionDelete(){
-        $request = App::getInstance()->request; 
-        if($request->method() == 'POST') {
-            $id = $request->post('id');
-            App::getInstance()->session->delete("cart" , "{$id}" );
+        $app = App::getInstance();
+        if($app->request->method() == 'POST') {
+            $id = $app->request->post('id');
+            $app->session->delete("cart" , "{$id}" );
         }
     }
 }
